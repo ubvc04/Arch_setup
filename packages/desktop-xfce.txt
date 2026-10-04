@@ -1,0 +1,13 @@
+# Minimal XFCE desktop
+xfce4
+xfce4-terminal
+thunar
+thunar-volman
+xfce4-goodies
+gvfs
+gvfs-mtp
+xdg-user-dirs
+xorg-server
+xorg-xinit
+lightdm
+lightdm-gtk-greeter

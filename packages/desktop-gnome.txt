@@ -1,0 +1,6 @@
+# GNOME desktop
+gnome
+gnome-terminal
+sddm
+xorg-server
+xorg-xinit

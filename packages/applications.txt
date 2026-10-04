@@ -1,0 +1,6 @@
+# General applications
+firefox
+vlc
+gimp
+libreoffice-fresh
+thunderbird

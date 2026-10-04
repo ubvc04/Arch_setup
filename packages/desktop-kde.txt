@@ -1,0 +1,7 @@
+# KDE Plasma desktop
+plasma-desktop
+plasma-nm
+kde-system-meta
+sddm
+xorg-server
+xorg-xinit

@@ -1,0 +1,17 @@
+# Terminal and shell utilities
+bash
+bash-completion
+zsh
+fzf
+ripgrep
+fd
+bat
+exa
+htop
+tmux
+neofetch
+fastfetch
+wget
+curl
+rsync
+tree

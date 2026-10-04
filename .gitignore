@@ -1,0 +1,60 @@
+# Environment and secrets
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.crt
+*.cer
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+credentials
+secrets
+private_keys
+tokens
+*.token
+
+# Git and editor data
+.git
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Node / Python / build output
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+.pytest_cache/
+build/
+dist/
+out/
+coverage/
+*.egg-info/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+log/
+logs/
+
+# System and package caches
+pacman_cache/
+*.cache
+
+# Local SSH configuration that may contain secrets
+.ssh/id_*
+.ssh/*.pub
+! .ssh/config
+! .ssh/known_hosts

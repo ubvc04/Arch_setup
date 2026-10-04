@@ -1,0 +1,26 @@
+# ~/.bashrc for Arch Setup
+
+# Check for interactive shell
+if [[ $- != *i* ]]; then
+  return
+fi
+
+# Simple prompt
+PS1='\u@\h:\w\$ '
+
+# Shell history settings
+HISTSIZE=10000
+HISTFILESIZE=20000
+
+# Helpful aliases
+alias ll='ls -alh'
+alias la='ls -A'
+alias gs='git status'
+alias gp='git pull'
+alias gc='git commit'
+alias update='sudo pacman -Syu'
+
+# Load local customizations if present
+if [[ -f ~/.bashrc_local ]]; then
+  source ~/.bashrc_local
+fi

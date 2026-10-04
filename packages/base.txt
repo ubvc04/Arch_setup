@@ -1,0 +1,24 @@
+# Core system packages
+base-devel
+git
+curl
+wget
+vim
+nano
+unzip
+zip
+tar
+openssh
+sudo
+htop
+fastfetch
+tree
+rsync
+man-db
+man-pages
+less
+which
+file
+pciutils
+usbutils
+inetutils
