@@ -1,0 +1,907 @@
+
+The goal is:
+
+I want ONE personal GitHub repository containing my Arch Linux setup scripts, package lists, desktop environment setup, drivers, development tools, SSH/Git configuration, useful utilities, system configuration, and optional software.
+
+I should be able to clone the repository over SSH on a fresh Arch Linux installation and run a main installation script to configure my system.
+
+IMPORTANT:
+- Target Arch Linux.
+- Use pacman wherever possible.
+- Prefer official Arch repositories.
+- Do not add random third-party repositories unnecessarily.
+- Use Bash.
+- Scripts must be safe and readable.
+- Use `set -euo pipefail`.
+- Make scripts idempotent wherever possible, meaning running them multiple times should not break the system.
+- Never store passwords, API keys, private SSH keys, tokens, or other secrets in Git.
+- Do not blindly install hardware-specific drivers.
+- Detect hardware where appropriate.
+- Ask for confirmation before destructive operations.
+- Do not automatically delete files or packages without confirmation.
+- Explain every important command.
+- Do not use obsolete Arch Linux commands.
+- Use current Arch Linux package names and practices.
+- The repository should be easy for a beginner to understand but professionally structured.
+
+==================================================
+1. REPOSITORY STRUCTURE
+==================================================
+
+Create this structure:
+
+arch-setup/
+│
+├── README.md
+├── LICENSE
+├── .gitignore
+├── install.sh
+├── update.sh
+│
+├── packages/
+│   ├── base.txt
+│   ├── development.txt
+│   ├── terminal.txt
+│   ├── desktop-xfce.txt
+│   ├── desktop-kde.txt
+│   ├── desktop-gnome.txt
+│   └── applications.txt
+│
+├── desktop/
+│   ├── xfce.sh
+│   ├── kde.sh
+│   ├── gnome.sh
+│   └── sddm.sh
+│
+├── drivers/
+│   ├── common.sh
+│   ├── detect.sh
+│   ├── intel.sh
+│   ├── amd.sh
+│   └── nvidia.sh
+│
+├── development/
+│   ├── git.sh
+│   ├── ssh.sh
+│   ├── node.sh
+│   ├── python.sh
+│   ├── java.sh
+│   └── docker.sh
+│
+├── terminal/
+│   ├── bash.sh
+│   ├── zsh.sh
+│   └── aliases.sh
+│
+├── system/
+│   ├── services.sh
+│   ├── bluetooth.sh
+│   ├── audio.sh
+│   └── networking.sh
+│
+├── applications/
+│   ├── browser.sh
+│   ├── vscode.sh
+│   └── utilities.sh
+│
+├── scripts/
+│   ├── update.sh
+│   ├── cleanup.sh
+│   ├── backup.sh
+│   └── system-info.sh
+│
+└── config/
+    ├── bashrc
+    ├── gitconfig.example
+    └── README.md
+
+You may improve this structure if there is a better professional organization, but explain the changes.
+
+==================================================
+2. MAIN INSTALLATION SCRIPT
+==================================================
+
+Create:
+
+install.sh
+
+It should act as the main entry point.
+
+When I run:
+
+./install.sh
+
+it should:
+
+1. Check that the system is Arch Linux.
+2. Check whether the script is running as root.
+3. If root is required, explain whether the user should run the whole script as root or use sudo internally.
+4. Check internet connectivity.
+5. Synchronize package databases.
+6. Update the system safely.
+7. Install essential packages.
+8. Ask me which desktop environment I want.
+
+Desktop choices should include:
+
+1. XFCE
+2. KDE Plasma
+3. GNOME
+4. Skip desktop installation
+
+XFCE should be the recommended minimal desktop option.
+
+After choosing the desktop, ask which additional components I want:
+
+- Drivers
+- Git
+- SSH
+- Development tools
+- Node.js
+- Python
+- Java
+- Docker
+- VS Code
+- Browser
+- Bluetooth
+- Audio
+- Terminal customization
+
+Do not force-install everything.
+
+Make the installer interactive.
+
+At the end show a summary of what was installed.
+
+==================================================
+3. PACKAGE MANAGEMENT
+==================================================
+
+Create package list files.
+
+Example:
+
+packages/base.txt
+
+Include only useful fundamental packages.
+
+Possible packages:
+
+git
+curl
+wget
+vim
+nano
+unzip
+zip
+tar
+base-devel
+openssh
+htop
+fastfetch
+tree
+rsync
+man-db
+man-pages
+
+But verify package names against current Arch practices.
+
+Create:
+
+packages/development.txt
+
+Include useful development packages such as:
+
+git
+base-devel
+gcc
+make
+cmake
+python
+python-pip
+nodejs
+npm
+jdk-openjdk
+
+Only include packages that actually make sense.
+
+Create:
+
+packages/terminal.txt
+
+Include useful terminal tools.
+
+Create:
+
+packages/applications.txt
+
+Include general applications separately.
+
+DO NOT install every package by default.
+
+==================================================
+4. DESKTOP ENVIRONMENTS
+==================================================
+
+Create separate scripts.
+
+desktop/xfce.sh
+
+Install a minimal but usable XFCE environment.
+
+Prefer a reasonably minimal installation rather than blindly installing every XFCE extra package.
+
+Include:
+
+- xfce4
+- xfce4-terminal
+- thunar
+- useful basic utilities
+
+Explain why each package is installed.
+
+desktop/kde.sh
+
+Install KDE Plasma using current Arch package names.
+
+desktop/gnome.sh
+
+Install GNOME using current Arch package names.
+
+desktop/sddm.sh
+
+Configure SDDM properly.
+
+Important:
+
+Do not break an existing display manager.
+
+If another display manager is already enabled, detect it and ask before changing it.
+
+Allow switching between installed desktop environments from the login screen.
+
+==================================================
+5. DRIVERS
+==================================================
+
+Create:
+
+drivers/common.sh
+drivers/detect.sh
+drivers/intel.sh
+drivers/amd.sh
+drivers/nvidia.sh
+
+The scripts must not install NVIDIA drivers on a system that doesn't have NVIDIA hardware.
+
+Detect hardware using commands such as:
+
+lspci
+lsusb
+uname
+inxi
+
+If required, install the appropriate detection utility first.
+
+For graphics:
+
+Intel:
+- mesa
+- appropriate Vulkan/VA-API packages
+
+AMD:
+- mesa
+- appropriate Vulkan/VA-API packages
+
+NVIDIA:
+- use the correct current Arch package for the detected hardware
+- explain that NVIDIA package selection can depend on kernel/GPU generation
+
+Also install/update linux-firmware where appropriate.
+
+Do not assume the user's GPU.
+
+Do not automatically install all Intel + AMD + NVIDIA drivers.
+
+==================================================
+6. BLUETOOTH
+==================================================
+
+Create:
+
+system/bluetooth.sh
+
+Install and configure BlueZ and the required Bluetooth utilities.
+
+Enable the appropriate systemd service.
+
+Make the script idempotent.
+
+==================================================
+7. AUDIO
+==================================================
+
+Create:
+
+system/audio.sh
+
+Use the current recommended Arch Linux audio stack.
+
+Prefer PipeWire/WirePlumber where appropriate.
+
+Do not install obsolete PulseAudio-only configurations unless necessary.
+
+==================================================
+8. NETWORKING
+==================================================
+
+Create:
+
+system/networking.sh
+
+Detect whether NetworkManager is already installed.
+
+If not, optionally install NetworkManager.
+
+Enable it only when appropriate.
+
+Do not break an existing networking configuration.
+
+==================================================
+9. GIT
+==================================================
+
+Create:
+
+development/git.sh
+
+Ask for:
+
+Git username
+Git email
+
+Configure:
+
+git config --global user.name
+git config --global user.email
+
+Do not store credentials.
+
+Also configure useful Git defaults, but explain each setting.
+
+==================================================
+10. SSH
+==================================================
+
+Create:
+
+development/ssh.sh
+
+The script should:
+
+1. Check whether ~/.ssh exists.
+2. Check whether an SSH key already exists.
+3. Never overwrite an existing private key automatically.
+4. If no key exists, offer to generate an ed25519 key.
+5. Start ssh-agent if necessary.
+6. Add the key to ssh-agent.
+7. Show the public key so I can add it to GitHub manually.
+8. Test GitHub SSH connectivity.
+
+Do NOT attempt to automatically upload the key to GitHub unless GitHub CLI authentication is explicitly configured.
+
+Show:
+
+ssh -T git@github.com
+
+and explain expected behavior.
+
+==================================================
+11. GITHUB WORKFLOW
+==================================================
+
+The repository itself should be designed to be cloned using:
+
+git clone git@github.com:USERNAME/arch-setup.git
+
+Explain how to:
+
+- create the GitHub repository
+- add the SSH remote
+- push the repository
+- pull updates
+- commit changes
+- keep the setup repository updated
+
+Include commands such as:
+
+git status
+git add .
+git commit -m "Update Arch setup"
+git push
+git pull
+
+==================================================
+12. NODE.JS
+==================================================
+
+Create:
+
+development/node.sh
+
+Install the current Arch-supported Node.js/npm packages.
+
+Explain alternatives such as nvm if appropriate.
+
+Do not install multiple Node version managers simultaneously.
+
+Ask before installing an alternative version manager.
+
+==================================================
+13. PYTHON
+==================================================
+
+Create:
+
+development/python.sh
+
+Install Python and useful development tools.
+
+Explain Python virtual environments.
+
+Do not use sudo pip for normal Python project packages.
+
+==================================================
+14. JAVA
+==================================================
+
+Create:
+
+development/java.sh
+
+Install an appropriate OpenJDK package.
+
+Make it easy to check:
+
+java -version
+javac -version
+
+==================================================
+15. DOCKER
+==================================================
+
+Create:
+
+development/docker.sh
+
+Install Docker.
+
+Enable the Docker service.
+
+Ask whether the current user should be added to the docker group if appropriate.
+
+Clearly explain the security implications of adding a user to the docker group.
+
+Do not automatically make unsafe privilege changes without confirmation.
+
+==================================================
+16. VS CODE
+==================================================
+
+Create:
+
+applications/vscode.sh
+
+Prefer an official Arch-compatible installation method.
+
+If VS Code is not available in the official repositories, explain the distinction between:
+
+- official Microsoft build
+- open-source Code build
+- AUR packages
+
+Do not blindly install an AUR helper.
+
+Ask before using the AUR.
+
+==================================================
+17. TERMINAL
+==================================================
+
+Create:
+
+terminal/bash.sh
+terminal/zsh.sh
+terminal/aliases.sh
+
+Support Bash by default.
+
+Optionally allow Zsh.
+
+Do not replace the user's shell without asking.
+
+Create useful aliases such as:
+
+ll
+la
+gs
+gp
+gc
+update
+
+But avoid dangerous aliases.
+
+==================================================
+18. SYSTEM SERVICES
+==================================================
+
+Create:
+
+system/services.sh
+
+Provide safe functions to:
+
+- check enabled services
+- enable commonly needed services
+- show service status
+
+Do not enable random services.
+
+Use:
+
+systemctl
+
+correctly.
+
+==================================================
+19. UPDATE SCRIPT
+==================================================
+
+Create:
+
+scripts/update.sh
+
+It should safely update:
+
+- package databases
+- installed Arch packages
+
+Use:
+
+sudo pacman -Syu
+
+Also optionally update the GitHub setup repository itself.
+
+Do not automatically update AUR packages unless an AUR helper is intentionally configured.
+
+==================================================
+20. CLEANUP SCRIPT
+==================================================
+
+Create:
+
+scripts/cleanup.sh
+
+It should:
+
+- show package cache size
+- identify orphan packages
+- ask before deleting anything
+- optionally clean package cache
+
+Never blindly execute destructive commands.
+
+==================================================
+21. BACKUP SCRIPT
+==================================================
+
+Create:
+
+scripts/backup.sh
+
+Back up important configuration files such as:
+
+~/.bashrc
+~/.gitconfig
+~/.ssh/config
+
+BUT:
+
+DO NOT backup private SSH keys into GitHub.
+
+Explain which files are safe to store in Git and which are sensitive.
+
+The backup should be stored locally unless the user explicitly chooses another destination.
+
+==================================================
+22. SYSTEM INFORMATION
+==================================================
+
+Create:
+
+scripts/system-info.sh
+
+Display useful information:
+
+- OS
+- kernel
+- CPU
+- RAM
+- GPU
+- disk
+- desktop environment
+- display manager
+- network
+- installed shells
+
+Use tools available on Arch.
+
+If inxi is used, install it optionally.
+
+==================================================
+23. CONFIGURATION MANAGEMENT
+==================================================
+
+I want this repository to eventually become my personal dotfiles/setup repository.
+
+Design it so that I can later add:
+
+- .bashrc
+- .zshrc
+- .gitconfig
+- Vim configuration
+- Neovim configuration
+- VS Code settings
+- terminal configuration
+- XFCE settings
+- KDE settings
+- Hyprland configuration
+
+But do not overwrite existing user configuration automatically.
+
+Create `.example` files where appropriate.
+
+==================================================
+24. SECURITY
+==================================================
+
+Create a strong .gitignore.
+
+It must ignore things such as:
+
+.env
+*.key
+*.pem
+id_rsa
+id_ed25519
+credentials
+secrets
+private keys
+tokens
+node_modules
+Python caches
+build directories
+temporary files
+
+Do not accidentally commit secrets.
+
+Include a README section explaining secret management.
+
+==================================================
+25. ERROR HANDLING
+==================================================
+
+Every Bash script should use:
+
+set -euo pipefail
+
+Use functions where useful.
+
+Check commands before using them.
+
+Print clear messages:
+
+[INFO]
+[WARNING]
+[ERROR]
+[SUCCESS]
+
+If something fails, explain what failed and how to fix it.
+
+Do not hide errors.
+
+==================================================
+26. IDEMPOTENCY
+==================================================
+
+Scripts should be safe to run multiple times.
+
+For example:
+
+If a package is already installed:
+
+Do not reinstall unnecessarily.
+
+If a systemd service is already enabled:
+
+Do not treat that as an error.
+
+If an SSH key already exists:
+
+Do not overwrite it.
+
+If a configuration line already exists:
+
+Do not duplicate it.
+
+==================================================
+27. README
+==================================================
+
+Write a comprehensive README.md.
+
+Include:
+
+1. Project description
+2. Why this repository exists
+3. Requirements
+4. Fresh Arch installation instructions
+5. SSH GitHub setup
+6. Clone instructions
+7. Installation instructions
+8. Desktop selection
+9. Driver setup
+10. Development environment
+11. Git setup
+12. SSH setup
+13. Docker setup
+14. Updating the repository
+15. Adding new packages
+16. Adding new scripts
+17. Security
+18. Troubleshooting
+19. How to remove/change a desktop environment
+20. How to use the repository on another computer
+
+Include real commands.
+
+==================================================
+28. INTERACTIVE MENU
+==================================================
+
+In addition to install.sh, create an interactive menu.
+
+Example:
+
+========================================
+       MY ARCH LINUX SETUP
+========================================
+
+1. Install base packages
+2. Install XFCE
+3. Install KDE
+4. Install GNOME
+5. Detect hardware
+6. Install drivers
+7. Setup Git
+8. Setup SSH
+9. Setup Development Environment
+10. Setup Docker
+11. Setup Bluetooth
+12. Setup Audio
+13. Update System
+14. Cleanup
+15. System Information
+0. Exit
+
+The user should be able to select an option.
+
+Do not make the menu dangerous.
+
+==================================================
+29. HARDWARE DETECTION
+==================================================
+
+Create a useful hardware detection system.
+
+Detect:
+
+- CPU vendor
+- GPU vendor
+- GPU model
+- Wi-Fi controller
+- Bluetooth controller
+- RAM
+- storage
+- kernel
+- desktop environment
+
+Use safe commands such as:
+
+lspci
+lsusb
+lsblk
+free
+uname
+hostnamectl
+
+Print the detected hardware before installing hardware-specific drivers.
+
+==================================================
+30. FUTURE SUPPORT
+==================================================
+
+Design the repository so I can later add:
+
+- Hyprland
+- Sway
+- i3
+- LXQt
+- Wayland tools
+- Gaming setup
+- Steam
+- development environments
+- Rust
+- Go
+- Kubernetes
+- Terraform
+- cloud CLI tools
+- Android development
+- Flutter
+- Angular
+- Spring Boot
+- MySQL
+- PostgreSQL
+- Redis
+- local AI tools
+- Ollama
+- Qwen coding models
+- Cline/Kilo Code
+- terminal AI agents
+
+Do not install these by default.
+
+Create optional modules that can be added later.
+
+==================================================
+31. IMPORTANT ARCH LINUX RULES
+==================================================
+
+Follow modern Arch Linux practices.
+
+Before giving package names or configuration that may have changed, verify current Arch Linux documentation/package naming if internet access is available.
+
+Do not rely on Ubuntu/Debian commands such as:
+
+apt
+apt-get
+add-apt-repository
+
+Use Arch equivalents.
+
+Do not blindly copy old Arch tutorials.
+
+Do not recommend random third-party repositories.
+
+Explain AUR usage separately.
+
+==================================================
+32. OUTPUT FORMAT
+==================================================
+
+I want you to actually produce the complete project.
+
+For every file:
+
+1. Show the file path.
+2. Show the complete contents.
+3. Explain what it does.
+4. Explain how to make it executable if it is a shell script.
+
+Example:
+
+FILE:
+desktop/xfce.sh
+
+```bash
+...
